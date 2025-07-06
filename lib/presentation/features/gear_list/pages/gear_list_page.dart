@@ -1,12 +1,51 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/constants/app_constants.dart';
+import '../../../../core/mock_data/gear_mock_data.dart';
+import '../widgets/gear_category_widget.dart';
+import '../widgets/gear_item_widget.dart';
 
-class GearListPage extends StatelessWidget {
+class GearListPage extends StatefulWidget {
   const GearListPage({super.key});
 
   @override
+  State<GearListPage> createState() => _GearListPageState();
+}
+
+class _GearListPageState extends State<GearListPage> {
+  late Map<String, List<Map<String, dynamic>>> _gearData;
+
+  @override
+  void initState() {
+    super.initState();
+    _gearData = GearMockData.getMockGearData();
+  }
+
+  void _updateGearItem(String category, int itemIndex, bool? value) {
+    setState(() {
+      _gearData[category]![itemIndex]['isChecked'] = value ?? false;
+    });
+  }
+
+  String _getCategoryIcon(String category) {
+    switch (category) {
+      case '衣物裝備':
+        return '🧥';
+      case '必要裝備':
+        return '🔦';
+      case '食物飲水':
+        return '🍯';
+      default:
+        return '📦';
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final checkedItems = GearMockData.getCheckedItems();
+    final totalItems = GearMockData.getTotalItems();
+    final completionPercentage = GearMockData.getCompletionPercentage();
+
     return Scaffold(
       body: Container(
         decoration: AppTheme.primaryGradientDecoration,
@@ -90,86 +129,63 @@ class GearListPage extends StatelessWidget {
                     children: [
                       const SizedBox(height: AppConstants.paddingLarge),
                       
-                      // 裝備清單內容區域
+                      // 裝備分類列表
                       Expanded(
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
                             horizontal: AppConstants.paddingMedium,
                           ),
-                          child: Column(
-                            children: [
-                              // 暫時的佔位內容，後續會被實際的裝備分類替換
-                              Expanded(
-                                child: Center(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        width: 80,
-                                        height: 80,
-                                        decoration: BoxDecoration(
-                                          color: AppTheme.textLight.withValues(alpha: 0.1),
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: const Icon(
-                                          Icons.checklist,
-                                          size: 40,
-                                          color: AppTheme.textLight,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 16),
-                                      const Text(
-                                        '裝備清單',
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                          color: AppTheme.textPrimary,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 8),
-                                      const Text(
-                                        '即將顯示裝備分類和檢查清單',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: AppTheme.textSecondary,
-                                        ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
+                          child: ListView(
+                            children: _gearData.entries.map((entry) {
+                              final category = entry.key;
+                              final items = entry.value;
                               
-                              // 完成度進度條區域
-                              Container(
-                                padding: const EdgeInsets.all(AppConstants.paddingMedium),
-                                decoration: BoxDecoration(
-                                  color: AppTheme.textLight.withValues(alpha: 0.05),
-                                  borderRadius: BorderRadius.circular(AppConstants.radiusMedium),
-                                ),
-                                child: const Column(
-                                  children: [
-                                    Text(
-                                      '完成度: 4/8 (50%)',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: AppTheme.textSecondary,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                    SizedBox(height: 8),
-                                    LinearProgressIndicator(
-                                      value: 0.5,
-                                      backgroundColor: Color(0xFFe0e0e0),
-                                      valueColor: AlwaysStoppedAnimation<Color>(AppTheme.successGreen),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              
-                              const SizedBox(height: AppConstants.paddingLarge),
-                            ],
+                              return GearCategoryWidget(
+                                categoryTitle: category,
+                                categoryIcon: _getCategoryIcon(category),
+                                gearItems: items.asMap().entries.map((itemEntry) {
+                                  final index = itemEntry.key;
+                                  final item = itemEntry.value;
+                                  
+                                  return GearItemWidget(
+                                    itemName: item['name'],
+                                    isChecked: item['isChecked'],
+                                    onChanged: (value) {
+                                      _updateGearItem(category, index, value);
+                                    },
+                                  );
+                                }).toList(),
+                              );
+                            }).toList(),
                           ),
+                        ),
+                      ),
+                      
+                      // 完成度進度條區域
+                      Container(
+                        margin: const EdgeInsets.all(AppConstants.paddingMedium),
+                        padding: const EdgeInsets.all(AppConstants.paddingMedium),
+                        decoration: BoxDecoration(
+                          color: AppTheme.textLight.withValues(alpha: 0.05),
+                          borderRadius: BorderRadius.circular(AppConstants.radiusMedium),
+                        ),
+                        child: Column(
+                          children: [
+                            Text(
+                              '完成度: $checkedItems/$totalItems (${(completionPercentage * 100).round()}%)',
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: AppTheme.textSecondary,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            LinearProgressIndicator(
+                              value: completionPercentage,
+                              backgroundColor: const Color(0xFFe0e0e0),
+                              valueColor: const AlwaysStoppedAnimation<Color>(AppTheme.successGreen),
+                            ),
+                          ],
                         ),
                       ),
                     ],

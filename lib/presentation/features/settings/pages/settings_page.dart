@@ -18,6 +18,7 @@ class SettingsPage extends StatelessWidget {
                 padding: const EdgeInsets.all(AppConstants.paddingLarge),
                 child: Row(
                   children: [
+                    // Settings Icon
                     Container(
                       width: 30,
                       height: 30,
@@ -27,10 +28,11 @@ class SettingsPage extends StatelessWidget {
                         ),
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(
-                        Icons.settings,
-                        color: Colors.white,
-                        size: 20,
+                      child: const Center(
+                        child: Text(
+                          '⚙️',
+                          style: TextStyle(fontSize: 16),
+                        ),
                       ),
                     ),
                     const SizedBox(width: 10),
@@ -39,7 +41,7 @@ class SettingsPage extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        color: AppTheme.mountainBlue,
                       ),
                     ),
                   ],
@@ -51,10 +53,20 @@ class SettingsPage extends StatelessWidget {
               // Content Area
               Expanded(
                 child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: AppConstants.paddingMedium),
-                  decoration: BoxDecoration(
+                  width: double.infinity,
+                  decoration: const BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(AppConstants.radiusLarge),
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(AppConstants.radiusLarge),
+                      topRight: Radius.circular(AppConstants.radiusLarge),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 10,
+                        offset: Offset(0, -2),
+                      ),
+                    ],
                   ),
                   child: const Center(
                     child: Column(
@@ -87,8 +99,6 @@ class SettingsPage extends StatelessWidget {
                   ),
                 ),
               ),
-              
-              const SizedBox(height: AppConstants.paddingLarge),
             ],
           ),
         ),

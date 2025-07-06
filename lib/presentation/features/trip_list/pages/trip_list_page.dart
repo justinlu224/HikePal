@@ -13,51 +13,6 @@ class TripListPage extends StatelessWidget {
         child: SafeArea(
           child: Column(
             children: [
-              // Status Bar 區域
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppConstants.paddingMedium,
-                  vertical: AppConstants.paddingSmall,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      '09:41',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.white.withValues(alpha: 0.9),
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.signal_cellular_4_bar,
-                          size: 16,
-                          color: Colors.white.withValues(alpha: 0.9),
-                        ),
-                        const SizedBox(width: 4),
-                        Icon(
-                          Icons.battery_full,
-                          size: 16,
-                          color: Colors.white.withValues(alpha: 0.9),
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          '100%',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.white.withValues(alpha: 0.9),
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              
               // App Header
               Padding(
                 padding: const EdgeInsets.all(AppConstants.paddingLarge),

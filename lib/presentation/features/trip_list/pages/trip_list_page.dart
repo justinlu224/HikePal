@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/constants/app_constants.dart';
+import '../../../../core/mock_data/trip_mock_data.dart';
+import '../widgets/trip_card_widget.dart';
 
 class TripListPage extends StatelessWidget {
   const TripListPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final mockTrips = TripMockData.getMockTrips();
+    
     return Scaffold(
       body: Container(
         decoration: AppTheme.primaryGradientDecoration,
@@ -66,11 +70,10 @@ class TripListPage extends StatelessWidget {
               
               const SizedBox(height: 20),
               
-              // Content Area - 行程卡片列表區域
+              // Content Area - 行程卡片列表
               Expanded(
                 child: Container(
                   width: double.infinity,
-                  margin: const EdgeInsets.symmetric(horizontal: AppConstants.paddingMedium),
                   decoration: const BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(
@@ -89,49 +92,35 @@ class TripListPage extends StatelessWidget {
                     children: [
                       const SizedBox(height: AppConstants.paddingLarge),
                       
-                      // 暫時的佔位內容，後續會被實際的行程卡片替換
+                      // 行程列表
                       Expanded(
-                        child: Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                width: 80,
-                                height: 80,
-                                decoration: BoxDecoration(
-                                  color: AppTheme.textLight.withValues(alpha: 0.1),
-                                  shape: BoxShape.circle,
+                        child: mockTrips.isEmpty
+                            ? _buildEmptyState()
+                            : ListView.builder(
+                                itemCount: mockTrips.length,
+                                padding: const EdgeInsets.only(
+                                  bottom: AppConstants.paddingLarge,
                                 ),
-                                child: const Icon(
-                                  Icons.list_alt,
-                                  size: 40,
-                                  color: AppTheme.textLight,
-                                ),
+                                itemBuilder: (context, index) {
+                                  final trip = mockTrips[index];
+                                  return TripCardWidget(
+                                    tripName: trip['tripName'],
+                                    date: trip['date'],
+                                    duration: trip['duration'],
+                                    status: trip['status'],
+                                    onTap: () {
+                                      // TODO: 實作行程詳情頁面導航
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: Text('點擊了 ${trip['tripName']}'),
+                                          duration: const Duration(seconds: 2),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
                               ),
-                              const SizedBox(height: 16),
-                              const Text(
-                                '尚無行程',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppTheme.textPrimary,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              const Text(
-                                '點擊右下角按鈕新增您的第一個登山行程',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: AppTheme.textSecondary,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
-                          ),
-                        ),
                       ),
-                      
-                      const SizedBox(height: AppConstants.paddingLarge),
                     ],
                   ),
                 ),
@@ -157,6 +146,39 @@ class TripListPage extends StatelessWidget {
           Icons.add,
           color: Colors.white,
         ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return const Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.list_alt,
+            size: 64,
+            color: AppTheme.textLight,
+          ),
+          SizedBox(height: 16),
+          Text(
+            '尚無行程',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: AppTheme.textPrimary,
+            ),
+          ),
+          SizedBox(height: 8),
+          Text(
+            '點擊右下角按鈕新增您的第一個登山行程',
+            style: TextStyle(
+              fontSize: 14,
+              color: AppTheme.textSecondary,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
     );
   }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'core/theme/app_theme.dart';
 import 'core/constants/app_constants.dart';
-import 'presentation/pages/main_page.dart';
+import 'presentation/pages/splash_page.dart';
 
 class HikePalApp extends StatelessWidget {
   const HikePalApp({super.key});
@@ -15,8 +15,8 @@ class HikePalApp extends StatelessWidget {
       // 主題設定
       theme: AppTheme.lightTheme,
       
-      // 使用新的主頁面
-      home: const MainPage(),
+      // 使用啟動畫面作為首頁
+      home: const SplashPage(),
       
       // 路由設定 (後續會用 go_router 替換)
       // routes: AppRoutes.routes,
